@@ -3,7 +3,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('learnsequelize', 'root', '', {
     host: 'localhost',
     dialect: 'mysql',
-    logging : false
+    logging : true
 });
 
 try {
@@ -19,6 +19,9 @@ db.sequelize = sequelize;
 
 db.user = require('./user')(sequelize, DataTypes)
 db.contact = require('./contact')(sequelize, DataTypes)
-sequelize.sync({force: false});
 
+db.user.hasOne(db.contact);
+db.contact.belongsTo(db.user);
+
+sequelize.sync({force: false});
 module.exports = db;

@@ -1,5 +1,6 @@
 const db = require('../models');
 const User = db.user; 
+const Contact = db.contact;
 
 const getUser = async (req, res) =>{
     const user = await User.findOne({
@@ -9,7 +10,13 @@ const getUser = async (req, res) =>{
 }
 
 const getUsers = async (req, res) =>{
-    const user = await User.findAll();
+    const user = await User.findAll({
+        attributes : ['firstName'],
+        include : {
+            model : Contact,
+            attributes : ['name']
+        },
+    });
     res.status(200).json(user);
 }
 
@@ -34,11 +41,29 @@ const deleteUser = async (req, res) =>{
     res.status(200).json(deletedUser);
 }
 
+// ______________________________________________________
+const OneToOne = async (req, res)=>{
+    const newUser = await User.create({
+        firstName : "Sandip",
+        lastName: "Mohesshori",
+    })
+    if(newUser){
+        var contactData = await Contact.create({
+            name: "Rabin",
+            phone: "01771848382",
+            UserId: newUser.id
+        })
+    }
+    res.status(200).json({data: newUser, contact:contactData});
+}
+
 
 module.exports = {
     getUser,
     getUsers,
     addUser,
     updateUser,
-    deleteUser
+    deleteUser,
+
+    OneToOne,
 }
