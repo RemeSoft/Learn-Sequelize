@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes)=>{
   }, {
 
   });
+
+  return Contact;
 }
 
 
